@@ -50,16 +50,14 @@ export const sessions = createTable(
   "session",
   {
     id: varchar("id", { length: 255 }).notNull().primaryKey(),
-    userID: varchar("user_id", { length: 21 })
-      .notNull()
-      .references(() => users.id),
+    userId: varchar("user_id", { length: 21 }).notNull(),
     expiresAt: timestamp("expires_at", {
       withTimezone: true,
       mode: "date",
     }).notNull(),
   },
   (t) => ({
-    userIdx: index("session_user_idx").on(t.userID),
+    userIdx: index("session_user_idx").on(t.userId),
   }),
 );
 
@@ -67,7 +65,7 @@ export const emailVerificationCodes = createTable(
   "email_verification_token",
   {
     id: serial("id").primaryKey(),
-    userID: varchar("user_id", { length: 21 }).unique().notNull(),
+    userId: varchar("user_id", { length: 21 }).unique().notNull(),
     email: varchar("email", { length: 255 }).notNull(),
     code: varchar("code", { length: 8 }).notNull(),
     expiresAt: timestamp("expires_at", {
@@ -76,7 +74,7 @@ export const emailVerificationCodes = createTable(
     }).notNull(),
   },
   (t) => ({
-    userIdx: index("email_verification_token_user_idx").on(t.userID),
+    userIdx: index("email_verification_token_user_idx").on(t.userId),
     emailIdx: index("email_verification_token_email_idx").on(t.email),
   }),
 );
@@ -126,8 +124,8 @@ export const resources = createTable("resource", {
 
 export const comments = createTable("comment", {
   id: varchar("id", { length: 15 }).primaryKey(),
-  questionID: varchar("question_id", { length: 15 }).notNull(),
-  userID: varchar("user_id", { length: 21 }).notNull(),
+  questionI: varchar("question_id", { length: 15 }).notNull(),
+  userId: varchar("user_id", { length: 21 }).notNull(),
   text: text("text").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(
@@ -140,7 +138,7 @@ export const votes = createTable(
   "vote",
   {
     id: varchar("id", { length: 15 }).primaryKey(),
-    userID: varchar("user_id", { length: 21 })
+    userId: varchar("user_id", { length: 21 })
       .notNull()
       .references(() => users.id),
     questionID: varchar("question_id", { length: 15 })
@@ -152,6 +150,6 @@ export const votes = createTable(
     }).notNull(),
   },
   (t) => ({
-    unique: unique("vote_unique_idx").on(t.userID, t.questionID),
+    unique: unique("vote_unique_idx").on(t.userId, t.questionID),
   }),
 );
