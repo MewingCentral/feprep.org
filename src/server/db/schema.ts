@@ -20,6 +20,8 @@ import {
   SECTIONS,
   TOPICS,
 } from "~/lib/consts";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { type z } from "zod";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -33,8 +35,8 @@ export const users = createTable(
   "user",
   {
     id: varchar("id", { length: 21 }).primaryKey(),
-    email: varchar("email", { length: 255 }).notNull().unique(),
-    hashedPassword: varchar("hashed_password", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).unique().notNull(),
+    hashedPassword: varchar("hashed_password", { length: 255 }),
     isEmailVerified: boolean("is_email_verified").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(
@@ -45,6 +47,11 @@ export const users = createTable(
     emailIdx: index("user_email_idx").on(t.email),
   }),
 );
+
+export const insertUserSchema = createInsertSchema(users);
+export const selectUserSchema = createSelectSchema(users);
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type SelectUser = z.infer<typeof selectUserSchema>;
 
 export const sessions = createTable(
   "session",
@@ -124,7 +131,7 @@ export const resources = createTable("resource", {
 
 export const comments = createTable("comment", {
   id: varchar("id", { length: 15 }).primaryKey(),
-  questionI: varchar("question_id", { length: 15 }).notNull(),
+  questionID: varchar("question_id", { length: 15 }).notNull(),
   userId: varchar("user_id", { length: 21 }).notNull(),
   text: text("text").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
