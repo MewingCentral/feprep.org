@@ -18,4 +18,8 @@ if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });
 
-export const adapter = new DrizzlePostgreSQLAdapter(db, schema.sessions, schema.users);
+export const adapter = new DrizzlePostgreSQLAdapter(
+  db,
+  schema.sessions,
+  schema.users,
+);
