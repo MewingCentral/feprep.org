@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MobileDropdown } from "./mobile-dropdown";
+import { Button } from "~/components/ui/button";
 
 export function Navbar() {
   return (
@@ -7,7 +8,10 @@ export function Navbar() {
       <Link href="/" className="flex items-center gap-2 text-xl font-bold">
         FEPrep
       </Link>
-      <MobileDropdown />
+      <div className="flex items-center gap-2">
+        <Button size="sm">Sign Up</Button>
+        <MobileDropdown />
+      </div>
     </nav>
   );
 }
