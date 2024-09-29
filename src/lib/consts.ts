@@ -41,4 +41,4 @@ export const SECTIONS = [
 
 export const POINTS = ["5", "10"] as const;
 
-export const QUESTION_NUMBERS = ["1", "2", "3"] as const;
+export const PROBLEM_NUMBERS = ["1", "2", "3"] as const;
