@@ -16,7 +16,7 @@ import {
 import {
   DIFFICULTIES,
   POINTS,
-  QUESTION_NUMBERS,
+  PROBLEM_NUMBERS,
   SECTIONS,
   TOPICS,
 } from "~/lib/consts";
@@ -101,7 +101,7 @@ export const passwordResetTokens = createTable(
   }),
 );
 
-export const questions = createTable("question", {
+export const problems = createTable("problem", {
   id: varchar("id", { length: 15 }).primaryKey(),
   title: varchar("title", {
     length: 255,
@@ -109,12 +109,11 @@ export const questions = createTable("question", {
   pdf_url: text("pdf_url").notNull(),
   average_score: numeric("average_score", { precision: 5, scale: 2 }).notNull(),
   points: varchar("points", { length: 2, enum: POINTS }).notNull(),
-
   section: varchar("section", { length: 50, enum: SECTIONS }).notNull(),
   topic: varchar("topic", { length: 50, enum: TOPICS }).notNull(),
-  questionNumber: varchar("question_number", {
+  problemNumber: varchar("problem_number", {
     length: 1,
-    enum: QUESTION_NUMBERS,
+    enum: PROBLEM_NUMBERS,
   }).notNull(),
 
   easyVotes: integer("easy_votes").notNull().default(0),
@@ -131,7 +130,7 @@ export const resources = createTable("resource", {
 
 export const comments = createTable("comment", {
   id: varchar("id", { length: 15 }).primaryKey(),
-  questionID: varchar("question_id", { length: 15 }).notNull(),
+  problemID: varchar("problem_id", { length: 15 }).notNull(),
   userId: varchar("user_id", { length: 21 }).notNull(),
   text: text("text").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -148,15 +147,15 @@ export const votes = createTable(
     userId: varchar("user_id", { length: 21 })
       .notNull()
       .references(() => users.id),
-    questionID: varchar("question_id", { length: 15 })
+    problemID: varchar("problem_id", { length: 15 })
       .notNull()
-      .references(() => questions.id),
+      .references(() => problems.id),
     vote: varchar("vote", {
       length: 6,
       enum: DIFFICULTIES,
     }).notNull(),
   },
   (t) => ({
-    unique: unique("vote_unique_idx").on(t.userId, t.questionID),
+    unique: unique("vote_unique_idx").on(t.userId, t.problemID),
   }),
 );
