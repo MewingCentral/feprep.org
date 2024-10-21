@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.1.18",
   "scripts": {
     "build": "next build",
     "db:generate": "drizzle-kit generate",
