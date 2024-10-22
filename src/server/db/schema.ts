@@ -31,10 +31,10 @@ import { type z } from "zod";
  */
 export const createTable = pgTableCreator((name) => `feprep.org_${name}`);
 
-export const users = createTable(
+export const UsersTable = createTable(
   "user",
   {
-    id: varchar("id", { length: 21 }).primaryKey(),
+    id: serial("id").primaryKey(),
     email: varchar("email", { length: 255 }).unique().notNull(),
     hashedPassword: varchar("hashed_password", { length: 255 }),
     isEmailVerified: boolean("is_email_verified").default(false).notNull(),
@@ -48,15 +48,15 @@ export const users = createTable(
   }),
 );
 
-export const insertUserSchema = createInsertSchema(users);
-export const selectUserSchema = createSelectSchema(users);
+export const insertUserSchema = createInsertSchema(UsersTable);
+export const selectUserSchema = createSelectSchema(UsersTable);
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type SelectUser = z.infer<typeof selectUserSchema>;
 
-export const sessions = createTable(
+export const SessionsTable = createTable(
   "session",
   {
-    id: varchar("id", { length: 255 }).notNull().primaryKey(),
+    id: text("id").notNull().primaryKey(),
     userId: varchar("user_id", { length: 21 }).notNull(),
     expiresAt: timestamp("expires_at", {
       withTimezone: true,
@@ -68,7 +68,12 @@ export const sessions = createTable(
   }),
 );
 
-export const emailVerificationCodes = createTable(
+export const insertSessionSchema = createInsertSchema(SessionsTable);
+export const selectSessionSchema = createSelectSchema(SessionsTable);
+export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type SelectSession = z.infer<typeof selectSessionSchema>;
+
+export const EmailVerificationCodesTable = createTable(
   "email_verification_token",
   {
     id: serial("id").primaryKey(),
@@ -86,7 +91,7 @@ export const emailVerificationCodes = createTable(
   }),
 );
 
-export const passwordResetTokens = createTable(
+export const PasswordResetTokensTable = createTable(
   "password_reset_token",
   {
     id: varchar("id", { length: 40 }).primaryKey(),
@@ -101,7 +106,7 @@ export const passwordResetTokens = createTable(
   }),
 );
 
-export const problems = createTable("problem", {
+export const ProblemsTable = createTable("problem", {
   id: varchar("id", { length: 15 }).primaryKey(),
   title: varchar("title", {
     length: 255,
@@ -121,14 +126,14 @@ export const problems = createTable("problem", {
   hardVotes: integer("hard_votes").notNull().default(0),
 });
 
-export const resources = createTable("resource", {
+export const ResourcesTable = createTable("resource", {
   id: varchar("id", { length: 15 }).primaryKey(),
   topic: varchar("topic", { length: 50, enum: TOPICS }).notNull(),
   url: text("url").notNull(),
   isVideo: boolean("is_video").notNull(),
 });
 
-export const comments = createTable("comment", {
+export const CommentsTable = createTable("comment", {
   id: varchar("id", { length: 15 }).primaryKey(),
   problemID: varchar("problem_id", { length: 15 }).notNull(),
   userId: varchar("user_id", { length: 21 }).notNull(),
@@ -137,19 +142,19 @@ export const comments = createTable("comment", {
   updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(
     () => new Date(),
   ),
-  parent_comment_id: varchar("parent_comment_id", { length: 15 }),
+  parent_comment_id: varchar("parxent_comment_id", { length: 15 }),
 });
 
-export const votes = createTable(
+export const VotesTable = createTable(
   "vote",
   {
     id: varchar("id", { length: 15 }).primaryKey(),
     userId: varchar("user_id", { length: 21 })
       .notNull()
-      .references(() => users.id),
+      .references(() => UsersTable.id),
     problemID: varchar("problem_id", { length: 15 })
       .notNull()
-      .references(() => problems.id),
+      .references(() => ProblemsTable.id),
     vote: varchar("vote", {
       length: 6,
       enum: DIFFICULTIES,
