@@ -8,6 +8,6 @@
     "docs",
     "infra",
     "test",
-    "deps",
+    "deps"
   ]
 }
